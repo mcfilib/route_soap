@@ -2,7 +2,7 @@ require "contracts"
 require "securerandom"
 
 module RouteSoap
-  DEFAULT_ROUTER = Rails.application.routes if defined? Rails
+  DefaultRouter = Rails.application.routes if defined? Rails
 
   PathLike = -> (_) do
     _.respond_to?(:required_names) && _.respond_to?(:spec)
@@ -130,7 +130,7 @@ module RouteSoap
       include Contracts
 
       Contract Or[RouterLike, nil] => nil
-      def run!(router = DEFAULT_ROUTER)
+      def run!(router = DefaultRouter)
         puts Query.run(router)
       end
     end
@@ -141,7 +141,7 @@ module RouteSoap
       include Contracts
 
       Contract Or[RouterLike, nil] => Array[String]
-      def run(router = DEFAULT_ROUTER)
+      def run(router = DefaultRouter)
         Array.new.tap do |lines|
           router.routes.each do |route|
             Route.new(route).tap do |simple_route|

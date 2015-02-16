@@ -21,7 +21,7 @@ describe RouteSoap do
 
     class Route
       def defaults
-        { :controller => "admin/users", :action => "show"}
+        { :controller => "admin/users", :action => "show" }
       end
 
       def path

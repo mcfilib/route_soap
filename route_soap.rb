@@ -1,12 +1,15 @@
 require "contracts"
+require "securerandom"
 
-module RouteVerification
+module RouteSoap
+  DEFAULT_ROUTER = Rails.application.routes if defined? Rails
+
   PathLike = -> (_) do
     _.respond_to?(:required_names) && _.respond_to?(:spec)
   end
 
   RouteLike = -> (_) do
-    _.respond_to?(:path)
+    _.respond_to?(:defaults) && _.respond_to?(:path) && _.respond_to?(:verb)
   end
 
   RouterLike = -> (_) do
@@ -98,7 +101,7 @@ module RouteVerification
   class Spec
     include Contracts
 
-    Contract RouteLike => Spec
+    Contract Route => Spec
     def initialize(route)
       @route = route
       self
@@ -106,20 +109,39 @@ module RouteVerification
 
     Contract nil => String
     def to_s
-      "it { expect(#{ route.verb }(\"#{ route.path }\")).to route_to(\"#{ route.controller_action }\", #{ route.required_params }) }"
+      "it { #{ expectation } #{ result } }"
     end
 
     private
 
     attr_reader :route
+
+    def expectation
+      "expect(#{ route.verb }(\"#{ route.path }\")).to"
+    end
+
+    def result
+      "route_to(\"#{ route.controller_action }\", #{ route.required_params })"
+    end
   end
 
   class Command
     class << self
       include Contracts
 
+      Contract Or[RouterLike, nil] => nil
+      def run!(router = DEFAULT_ROUTER)
+        puts Query.run(router)
+      end
+    end
+  end
+
+  class Query
+    class << self
+      include Contracts
+
       Contract Or[RouterLike, nil] => Array[String]
-      def run(router = Rails.application.routes)
+      def run(router = DEFAULT_ROUTER)
         Array.new.tap do |lines|
           router.routes.each do |route|
             Route.new(route).tap do |simple_route|
@@ -127,11 +149,6 @@ module RouteVerification
             end
           end
         end
-      end
-
-      Contract Or[RouterLike, nil] => nil
-      def run!(router = Rails.application.routes)
-        puts run(router)
       end
     end
   end

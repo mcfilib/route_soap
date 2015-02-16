@@ -48,7 +48,7 @@ This takes a router and returns an array of expectations.
 
 ### `RouteSoap::Command`
 
-This takes a router and outputs array of expectations to the console.
+This takes a router and outputs the array of expectations to the console.
 
 ### Example
 

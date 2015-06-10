@@ -55,14 +55,15 @@ module RouteSoap
     def path
       @path ||= String(route_path.spec).gsub("(.:format)", "").tap do |path|
         required_params.each do |param, value|
-          path.gsub!(":#{param}", value)
+          path.gsub!(":#{param}", value) unless param == :format
         end
       end
     end
 
     Contract nil => Hash
     def required_params
-      @required_params ||= route_path.required_names.reduce(Hash.new) do |acc, param|
+      hash = { format: route.defaults[:format] }.delete_if { |_, v| v.nil? }
+      @required_params ||= route_path.required_names.reduce(hash) do |acc, param|
         acc[param] = SecureRandom.hex(3)
         acc
       end

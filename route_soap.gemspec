@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name                  = "route_soap"
-  spec.version               = "0.0.1"
+  spec.version               = "0.0.2"
   spec.required_ruby_version = ">= 1.9.3"
   spec.authors               = ["Philip Cunningham"]
   spec.email                 = ["hello@filib.io"]

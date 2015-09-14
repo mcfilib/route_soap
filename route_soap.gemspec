@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name                  = "route_soap"
-  spec.version               = "0.0.2"
+  spec.version               = "0.0.3"
   spec.required_ruby_version = ">= 1.9.3"
   spec.authors               = ["Philip Cunningham"]
   spec.email                 = ["hello@filib.io"]
@@ -16,5 +16,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "pry"
   spec.add_development_dependency "rake"
   spec.add_development_dependency "rspec"
-  spec.add_runtime_dependency     "contracts", ">= 0.4", "< 0.6"
+  spec.add_runtime_dependency     "contracts", ">= 0.4", "< 0.12"
 end

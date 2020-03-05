@@ -19,17 +19,16 @@ module RouteSoap
   class Route
     include Contracts
 
-    BLACKLIST = [
-      "/",
-      "/prototypes/*id",
+    DEFAULT_BLACKLIST = [
       "/rails/info",
       "/rails/info/properties",
       "/rails/info/routes"
     ]
 
-    Contract RouteLike => Route
-    def initialize(route)
+    # Contract RouteLike => Route
+    def initialize(route, blacklist = [])
       @route = route
+      @blacklist = blacklist + DEFAULT_BLACKLIST
       self
     end
 
@@ -77,7 +76,7 @@ module RouteSoap
 
     Contract nil => Bool
     def blacklisted?
-      BLACKLIST.include?(path)
+      @blacklist.include?(path)
     end
 
     Contract nil => Or[String, nil]
@@ -133,11 +132,11 @@ module RouteSoap
     class << self
       include Contracts
 
-      Contract Or[RouterLike, nil] => Array[String]
-      def run(router = DefaultRouter)
+      # Contract Or[RouterLike, nil] => Array[String]
+      def run(router = DefaultRouter, blacklist = [])
         Array.new.tap do |lines|
           router.routes.each do |route|
-            Route.new(route).tap do |simple_route|
+            Route.new(route, blacklist).tap do |simple_route|
               lines << String(Spec.new(simple_route)) if simple_route.valid?
             end
           end

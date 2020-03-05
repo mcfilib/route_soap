@@ -28,7 +28,7 @@ describe RouteSoap do
       end
 
       def verb
-        /^GET$/
+        "GET"
       end
     end
 

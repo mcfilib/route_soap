@@ -27,14 +27,6 @@ module RouteSoap
       "/rails/info/routes"
     ]
 
-    VERBS = {
-      /^DELETE$/ => :delete,
-      /^GET$/    => :get,
-      /^PATCH$/  => :patch,
-      /^POST$/   => :post,
-      /^PUT$/    => :put
-    }
-
     Contract RouteLike => Route
     def initialize(route)
       @route = route
@@ -62,7 +54,7 @@ module RouteSoap
 
     Contract nil => Hash
     def required_params
-      hash = { "format" => route.defaults[:format] }.delete_if { |_, v| v.nil? }
+      hash = { format: route.defaults[:format] }.delete_if { |_, v| v.nil? }
       @required_params ||= route_path.required_names.reduce(hash) do |acc, param|
         acc[param] = SecureRandom.hex(3)
         acc
@@ -71,7 +63,7 @@ module RouteSoap
 
     Contract nil => Symbol
     def verb
-      @verb ||= VERBS[route.verb]
+      @verb ||= route.verb.downcase.to_sym
     end
 
     private
